@@ -43,6 +43,7 @@ typedef struct {
     int16_t score;
     uint8_t depth;
     uint8_t bound;
+    uint8_t gen;
 
 } TTEntry;
 
