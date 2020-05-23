@@ -38,7 +38,7 @@ enum { BOUND_NONE, BOUND_UPPER, BOUND_LOWER, BOUND_EXACT };
 
 typedef struct {
 
-    Key posKey;
+    uint32_t key32;
     Move move;
     int16_t score;
     uint8_t depth;

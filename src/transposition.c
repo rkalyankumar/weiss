@@ -38,7 +38,7 @@ TTEntry* ProbeTT(const Key posKey, bool *ttHit) {
 
     TTEntry* tte = GetEntry(posKey);
 
-    *ttHit = tte->posKey == posKey;
+    *ttHit = tte->key32 == (posKey >> 32);
 
     return tte;
 }
@@ -54,10 +54,12 @@ void StoreTTEntry(TTEntry *tte, const Key posKey,
     assert(ValidDepth(depth));
     assert(ValidScore(score));
 
+    uint32_t key32 = posKey >> 32;
+
     // Store new data unless it would overwrite data about the same
     // position searched to a higher depth.
-    if (posKey != tte->posKey || depth >= tte->depth || bound == BOUND_EXACT)
-        tte->posKey = posKey,
+    if (key32 != tte->key32 || depth >= tte->depth || bound == BOUND_EXACT)
+        tte->key32  = key32,
         tte->move   = move,
         tte->score  = score,
         tte->depth  = depth,
