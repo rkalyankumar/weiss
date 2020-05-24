@@ -40,6 +40,8 @@ TTEntry* ProbeTT(const Key posKey, bool *ttHit) {
 
     *ttHit = tte->key32 == (posKey >> 32);
 
+    if (*ttHit) tte->gen = TT.gen;
+
     return tte;
 }
 
@@ -58,12 +60,13 @@ void StoreTTEntry(TTEntry *tte, const Key posKey,
 
     // Store new data unless it would overwrite data about the same
     // position searched to a higher depth.
-    if (key32 != tte->key32 || depth >= tte->depth || bound == BOUND_EXACT)
+    if (key32 != tte->key32 || depth >= tte->depth || bound == BOUND_EXACT || TT.gen - tte->gen > 2)
         tte->key32  = key32,
         tte->move   = move,
         tte->score  = score,
         tte->depth  = depth,
-        tte->bound  = bound;
+        tte->bound  = bound,
+        tte->gen    = TT.gen;
 }
 
 // Estimates the load factor of the transposition table (1 = 0.1%)

@@ -54,6 +54,7 @@ typedef struct {
     size_t count;
     size_t currentMB;
     size_t requestedMB;
+    uint8_t gen;
     bool dirty;
 
 } TranspositionTable;

@@ -534,8 +534,9 @@ static void PrepareSearch(Position *pos, Thread *threads) {
         memcpy(&threads[i].pos, pos, sizeof(Position));
     }
 
-    // Mark TT as used
+    // Mark TT as used and increment generation
     TT.dirty = true;
+    TT.gen += 1;
 }
 
 // Root of search
