@@ -242,7 +242,7 @@ static int AlphaBeta(Thread *thread, int alpha, int beta, Depth depth, PV *pv) {
         if (    bound == BOUND_EXACT
             || (bound == BOUND_LOWER ? score >= beta : score <= alpha)) {
 
-            StoreTTEntry(tte, posKey, NOMOVE, ScoreToTT(score, pos->ply), MAXDEPTH-1, bound);
+            StoreTTEntry(tte, posKey, NOMOVE, NOSCORE, ScoreToTT(score, pos->ply), MAXDEPTH-1, bound);
             return score;
         }
 
@@ -253,9 +253,11 @@ static int AlphaBeta(Thread *thread, int alpha, int beta, Depth depth, PV *pv) {
     }
 
     // Do a static evaluation for pruning considerations
-    int eval = history(0).eval = inCheck          ? NOSCORE
-                               : lastMoveNullMove ? -history(-1).eval + 2 * Tempo
-                                                  : EvalPosition(pos);
+    int eval = history(0).eval =
+          inCheck                       ? NOSCORE
+        : ttHit && tte->eval != NOSCORE ? tte->eval
+        : lastMoveNullMove              ? -history(-1).eval + 2 * Tempo
+                                        : EvalPosition(pos);
 
     // Improving if not in check, and current eval is higher than 2 plies ago
     bool improving = !inCheck && pos->ply >= 2 && eval > history(-2).eval;
@@ -437,7 +439,7 @@ move_loop:
                    : alpha != oldAlpha ? BOUND_EXACT
                                        : BOUND_UPPER;
 
-    StoreTTEntry(tte, posKey, bestMove, ScoreToTT(bestScore, pos->ply), depth, flag);
+    StoreTTEntry(tte, posKey, bestMove, eval, ScoreToTT(bestScore, pos->ply), depth, flag);
 
     assert(alpha >= oldAlpha);
     assert(ValidScore(alpha));

@@ -40,6 +40,7 @@ typedef struct {
 
     uint32_t key32;
     Move move;
+    int32_t eval;
     int16_t score;
     uint8_t depth;
     uint8_t bound;
@@ -84,7 +85,7 @@ INLINE TTEntry *GetEntry(Key posKey) {
 }
 
 TTEntry* ProbeTT(Key posKey, bool *ttHit);
-void StoreTTEntry(TTEntry *tte, Key posKey, Move move, int score, Depth depth, int bound);
+void StoreTTEntry(TTEntry *tte, Key posKey, Move move, int eval, int score, Depth depth, int bound);
 int HashFull();
 void ClearTT();
 void InitTT();

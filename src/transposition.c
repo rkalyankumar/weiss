@@ -46,6 +46,7 @@ TTEntry* ProbeTT(const Key posKey, bool *ttHit) {
 // Store an entry in the transposition table
 void StoreTTEntry(TTEntry *tte, const Key posKey,
                                 const Move move,
+                                const int eval,
                                 const int score,
                                 const Depth depth,
                                 const int bound) {
@@ -61,6 +62,7 @@ void StoreTTEntry(TTEntry *tte, const Key posKey,
     if (key32 != tte->key32 || depth >= tte->depth || bound == BOUND_EXACT)
         tte->key32  = key32,
         tte->move   = move,
+        tte->eval   = eval,
         tte->score  = score,
         tte->depth  = depth,
         tte->bound  = bound;
