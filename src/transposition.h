@@ -81,9 +81,9 @@ INLINE int ScoreFromTT (const int score, const uint8_t ply) {
 INLINE TTEntry *GetEntry(Key key) {
 
     // https://lemire.me/blog/2016/06/27/a-fast-alternative-to-the-modulo-reduction/
-    const uint64_t index =
-        ((uint32_t)(key)       * (uint64_t)(TT.count) >> 16) +
-        ((uint16_t)(key >> 32) * (uint64_t)(TT.count) >> 32);
+    const uint64_t part1 =  (uint32_t)(key)       * (uint64_t)(TT.count);
+    const uint64_t part2 = ((uint16_t)(key >> 32) * (uint64_t)(TT.count)) >> 16;
+    const uint64_t index = (part1 + part2) >> 16;
 
     return &TT.table[index];
 }
