@@ -83,7 +83,7 @@ static void *ThreadClearTT(void *voidThread) {
 
     // Logic for dividing the work taken from CFish
     size_t twoMB  = 2 * 1024 * 1024;
-    size_t total  = TT.count * sizeof(TTEntry);
+    size_t total  = TT.count * ENTRYPERCLUSTER * sizeof(TTEntry);
     size_t slice  = (total + thread->count - 1) / thread->count;
     size_t blocks = (slice + twoMB - 1) / twoMB;
     size_t begin  = thread->index * blocks * twoMB;
@@ -124,7 +124,7 @@ void InitTT(Thread *threads) {
     size_t MB = TT.requestedMB;
 
     size_t size = MB * 1024 * 1024;
-    TT.count = size / sizeof(TTEntry);
+    TT.count = size / (ENTRYPERCLUSTER * sizeof(TTEntry));
 
     // Free memory if already allocated
     if (TT.mem)
@@ -153,6 +153,6 @@ void InitTT(Thread *threads) {
     TT.dirty = true;
     ClearTT(threads);
 
-    printf("HashTable init complete with %" PRI_SIZET " entries, using %" PRI_SIZET "MB.\n", TT.count, MB);
+    printf("HashTable init complete with %" PRI_SIZET " entries, using %" PRI_SIZET "MB.\n", ENTRYPERCLUSTER * TT.count, MB);
     fflush(stdout);
 }
