@@ -192,7 +192,7 @@ int main(int argc, char **argv) {
         return Benchmark(argc, argv), 0;
 
     // Init engine
-    Engine engine = { .threads = InitThreads(1) };
+    Engine engine = { {}, InitThreads(1) };
     Position *pos = &engine.pos;
 
     // Setup the default position
