@@ -22,13 +22,21 @@ SOFTWARE.
 */
 
 #include <assert.h>
+#ifdef __cplusplus
+#include <atomic>
+#else
 #include <stdatomic.h>
+#endif
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "tbprobe.h"
+
+#ifdef __cplusplus
+using namespace std;
+#endif
 
 enum {
   W_PAWN = 1, W_KNIGHT, W_BISHOP, W_ROOK, W_QUEEN, W_KING,
@@ -66,6 +74,16 @@ typedef HANDLE map_t;
 
 // Threading support
 #ifndef TB_NO_THREADS
+#if defined(__cplusplus) && (__cplusplus >= 201103L)
+
+#include <mutex>
+#define LOCK_T std::mutex
+#define LOCK_INIT(x)
+#define LOCK_DESTROY(x)
+#define LOCK(x) x.lock()
+#define UNLOCK(x) x.unlock()
+
+#else
 #ifndef _WIN32
 #define LOCK_T pthread_mutex_t
 #define LOCK_INIT(x) pthread_mutex_init(&(x), NULL)
@@ -80,6 +98,7 @@ typedef HANDLE map_t;
 #define UNLOCK(x) ReleaseMutex(x)
 #endif
 
+#endif
 #else /* TB_NO_THREADS */
 #define LOCK_T          int
 #define LOCK_INIT(x)    /* NOP */
@@ -368,7 +387,11 @@ struct BaseEntry {
   uint64_t key;
   uint8_t *data[3];
   map_t mapping[3];
+#ifdef __cplusplus
+  atomic<bool> ready[3];
+#else
   atomic_bool ready[3];
+#endif
   uint8_t num;
   bool symmetric, hasPawns, hasDtm, hasDtz;
   union {

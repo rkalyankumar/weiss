@@ -27,6 +27,11 @@
 
 #include "tbconfig.h"
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 
 /*
  * Internal definitions.  Do not call these functions directly.
@@ -335,4 +340,8 @@ int tb_probe_root_wdl(uint64_t _white,
     bool     _turn,
     bool useRule50,
     struct TbRootMoves *_results);
+#endif
+
+#ifdef __cplusplus
+}
 #endif

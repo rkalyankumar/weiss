@@ -62,7 +62,9 @@
  */
 
 /* requires C11 or C++11 */
-#if !defined (__OPENCL_VERSION__)
+#if defined (__cplusplus)
+#include <cstdint>
+#elif !defined (__OPENCL_VERSION__)
 #include <stdint.h>
 #endif
 
