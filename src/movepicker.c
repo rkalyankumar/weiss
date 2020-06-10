@@ -59,6 +59,12 @@ static Move PickNextMove(MoveList *list, const Move ttMove, const Move kill1, co
     return bestMove;
 }
 
+static int MvvLvaScore(const Position *pos, const Move move) {
+
+    return moveIsEnPas(move) ? 105
+                             : MvvLvaScores[pieceOn(toSq(move))][pieceOn(fromSq(move))];
+}
+
 // Gives a score to each move left in the list
 static void ScoreMoves(MoveList *list, const Thread *thread, const int stage) {
 
@@ -69,8 +75,8 @@ static void ScoreMoves(MoveList *list, const Thread *thread, const int stage) {
         Move move = list->moves[i].move;
 
         if (stage == GEN_NOISY)
-            list->moves[i].score = moveIsEnPas(move) ? 105
-                                 : MvvLvaScores[pieceOn(toSq(move))][pieceOn(fromSq(move))];
+            list->moves[i].score = 500 * MvvLvaScore(pos, move)
+                                 + thread->captureHistory[pieceOn(fromSq(move))][toSq(move)][PieceTypeOf(pieceOn(toSq(move)))];
 
         if (stage == GEN_QUIET)
             list->moves[i].score = thread->history[pieceOn(fromSq(move))][toSq(move)];

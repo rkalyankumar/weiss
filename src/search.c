@@ -336,10 +336,10 @@ move_loop:
 
     InitNormalMP(&mp, &list, thread, ttMove, killer1, killer2);
 
-    Move quiets[32] = { 0 };
+    Move quiets[32] = { 0 }, captures[32] = { 0 };
 
     const int oldAlpha = alpha;
-    int moveCount = 0, quietCount = 0;
+    int moveCount = 0, quietCount = 0, captureCount = 0;
     Move bestMove = NOMOVE;
     score = -INFINITE;
 
@@ -362,6 +362,8 @@ move_loop:
         moveCount++;
         if (quiet && quietCount < 32)
             quiets[quietCount++] = move;
+        else if (captureCount < 32)
+            captures[captureCount++] = move;
 
         const Depth newDepth = depth - 1;
 
@@ -415,6 +417,8 @@ move_loop:
                 // Update search history
                 if (quiet)
                     thread->history[pieceOn(fromSq(bestMove))][toSq(bestMove)] += depth * depth;
+                else
+                    thread->captureHistory[pieceOn(fromSq(bestMove))][toSq(bestMove)][PieceTypeOf(pieceOn(toSq(move)))] += depth * depth;
 
                 // If score beats beta we have a cutoff
                 if (score >= beta) {
@@ -438,6 +442,12 @@ move_loop:
             if (m == bestMove) continue;
             thread->history[pieceOn(fromSq(m))][toSq(m)] -= depth * depth;
         }
+
+    for (int i = 0; i < captureCount; ++i) {
+        Move m = captures[i];
+        if (m == bestMove) continue;
+        thread->captureHistory[pieceOn(fromSq(m))][toSq(m)][PieceTypeOf(pieceOn(toSq(move)))] -= depth * depth;
+    }
 
     // Checkmate or stalemate
     if (!moveCount)

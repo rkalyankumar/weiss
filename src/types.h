@@ -224,6 +224,7 @@ typedef struct Thread {
     jmp_buf jumpBuffer;
 
     int history[PIECE_NB][64];
+    int captureHistory[PIECE_NB][64][TYPE_NB];
     Move killers[MAXDEPTH][2];
 
     // Anything below here is not zeroed out between searches
