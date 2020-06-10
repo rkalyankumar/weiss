@@ -75,7 +75,7 @@ static void ScoreMoves(MoveList *list, const Thread *thread, const int stage) {
         Move move = list->moves[i].move;
 
         if (stage == GEN_NOISY)
-            list->moves[i].score = 500 * MvvLvaScore(pos, move)
+            list->moves[i].score = 100 * MvvLvaScore(pos, move)
                                  + thread->captureHistory[pieceOn(fromSq(move))][toSq(move)][PieceTypeOf(pieceOn(toSq(move)))];
 
         if (stage == GEN_QUIET)
