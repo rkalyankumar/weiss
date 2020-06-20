@@ -57,7 +57,7 @@ extern int SemiOpenFile[2];
 extern int Mobility[4][28];
 
 
-static void Declare(ParserEntry *pe, const char *name, void *buffer, int count) {
+static void Declare(ParserEntry *pe, const char *name, int *buffer, int count) {
 
     const int *values = buffer;
 
