@@ -30,7 +30,7 @@ PEXT   = $(POPCNT) -DUSE_PEXT -mbmi2
 # Flags
 STD    = -std=c++17
 LIBS   = -pthread -lm
-WARN   = -Wall -Wextra -Wshadow
+WARN   = -Wall -Wextra -Wshadow -Wno-format
 
 CFLAGS = $(STD) $(WARN) -O3 -flto -march=native
 RFLAGS = $(STD) $(WARN) -O3 -flto -static
